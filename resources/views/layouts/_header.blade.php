@@ -37,8 +37,10 @@
                                  alt="" width="30" height="30"> {{ \Illuminate\Support\Facades\Auth::user()->name }}
                         </a>
                         <div class="dropdown-menu">
-                            <a href="#" class="dropdown-item" id="logout_btn" onclick="event.preventDefault(); document.getElementById('logout_form').submit();">退出登录</a>
+                            <a href="{{ route('user_addresses.index') }}" class="dropdown-item">收货地址</a>
 
+                            <div class="dropdown-divider"></div>
+                            <a href="#" class="dropdown-item" id="logout_btn" onclick="event.preventDefault(); document.getElementById('logout_form').submit();">退出登录</a>
                             <form action="{{ route('logout') }}" method="post" id="logout_form">
 {{--                                {{ csrf_field() }}--}}
                             </form>

@@ -39,3 +39,7 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     encrypted: true
 // });
+
+require('sweetalert');
+
+window.addressData = require('china-area-data/v4/data');

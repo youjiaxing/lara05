@@ -18,6 +18,6 @@ Route::get('/', 'PagesController@root')->name('root');
 
 Auth::routes(['verify' => true]);
 
-Route::middleware(['verified'])->group(function ($router) {
-
+Route::middleware(['verified'])->group(function () {
+    Route::resource('user_addresses', 'UserAddressController');
 });

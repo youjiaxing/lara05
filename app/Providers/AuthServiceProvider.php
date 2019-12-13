@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Policies\UserAddressPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Log;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -25,6 +27,10 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        Gate::guessPolicyNamesUsing(function ($modelClass) {
+            Log::debug("guess policy: " . $modelClass);
+//            App\Models\UserAddress -> App\Policies\UserAddressPolicy
+            return str_replace('App\Models\\', '\App\Policies\\', $modelClass) . "Policy";
+        });
     }
 }
