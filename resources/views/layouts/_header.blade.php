@@ -38,6 +38,7 @@
                         </a>
                         <div class="dropdown-menu">
                             <a href="{{ route('user_addresses.index') }}" class="dropdown-item">收货地址</a>
+                            <a href="{{ route('products.favorites') }}" class="dropdown-item">收藏列表</a>
 
                             <div class="dropdown-divider"></div>
                             <a href="#" class="dropdown-item" id="logout_btn" onclick="event.preventDefault(); document.getElementById('logout_form').submit();">退出登录</a>

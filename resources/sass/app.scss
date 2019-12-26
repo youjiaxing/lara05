@@ -4,6 +4,12 @@
 @import 'variables';
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
+// Font Awesome
+@import "~@fortawesome/fontawesome-free/scss/fontawesome.scss";
+@import "~@fortawesome/fontawesome-free/scss/regular";
+@import "~@fortawesome/fontawesome-free/scss/solid";
+@import "~@fortawesome/fontawesome-free/scss/brands";
+@import "~@fortawesome/fontawesome-free/scss/v4-shims";
 
 
 // header
@@ -46,6 +52,53 @@ body {
             a {
                 color: inherit;
             }
+        }
+    }
+}
+
+// 商品列表页
+.products-index-page {
+    .products-list-item {
+        img {
+            max-height: 200px;
+        }
+
+        a,&:link, &:active, &:hover, &:visited {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .product-title {
+            height: 3.2rem;
+            line-height: 1.6rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+        }
+
+        .sold_count {
+            color: rgb(177, 137, 118);
+            font-weight: bold;
+        }
+
+        .review_count {
+            color: rgb(110, 157, 186);
+            font-weight: bold;
+        }
+    }
+}
+
+// 商品详情页
+.products-show-page {
+    .btn-sku {
+        border-color: #979ca0;
+        margin-right: 0.5rem;
+
+        &.active, &.focus {
+            border-color: rgba(238, 23, 57, 0.74);
+            box-shadow: 0 0 0 0.1rem rgba(238, 23, 57, 0.74);
         }
     }
 }

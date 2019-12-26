@@ -154,7 +154,7 @@ return [
     'upload' => [
 
         // Disk in `config/filesystem.php`.
-        'disk' => 'admin',
+        'disk' => 'public',
 
         // Image and file upload path under the disk above.
         'directory' => [
@@ -215,7 +215,8 @@ return [
         /*
          * Only logging allowed methods in the list
          */
-        'allowed_methods' => ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH'],
+//        'allowed_methods' => ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH'],
+        'allowed_methods' => ['POST', 'PUT', 'DELETE', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH'],
 
         /*
          * Routes that will not log to database.
@@ -397,6 +398,16 @@ return [
     |
     */
     'extensions' => [
+        'ueditor' => [
 
+            // 如果要关掉这个扩展，设置为false
+            'enable' => true,
+
+            // 编辑器的前端配置 参考：http://fex.baidu.com/ueditor/#start-config
+            'config' => [
+                'initialFrameHeight' => 600, // 例如初始化高度
+            ],
+            // 'field_type' => '自定义名字'
+        ]
     ],
 ];

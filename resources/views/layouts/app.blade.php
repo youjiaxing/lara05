@@ -7,10 +7,11 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield("title", config('app.name')) - Laravel 电商教程</title>
     <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+    @yield("style")
 </head>
 <body>
 
-    <div class={{ route_class() }}"-page" id="app">
+    <div class="{{ route_class() }}-page" id="app">
         @include("layouts._header")
 
         <div class="container">

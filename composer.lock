@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "589d89154b2db0057505246d9f345895",
+    "content-hash": "de16cb30857833b3085fc09808ccc5f5",
     "packages": [
         {
             "name": "caouecs/laravel-lang",
@@ -54,6 +54,121 @@
                 "lpm"
             ],
             "time": "2019-11-20T05:44:33+00:00"
+        },
+        {
+            "name": "codingyu/laravel-ueditor",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/codingyu/laravel-ueditor.git",
+                "reference": "d5ecc406840609464556ae9f1f1471a60b223113"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/codingyu/laravel-ueditor/zipball/d5ecc406840609464556ae9f1f1471a60b223113",
+                "reference": "d5ecc406840609464556ae9f1f1471a60b223113",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "laravel/framework": "~5.5|~6.0"
+            },
+            "require-dev": {
+                "fabpot/php-cs-fixer": "^1.10"
+            },
+            "suggest": {
+                "overtrue/laravel-filesystem-qiniu": "如果你想要使用七牛云存储，也许你需要安装它哦~"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Codingyu\\LaravelUEditor\\UEditorServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Codingyu\\LaravelUEditor\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "codingyu",
+                    "email": "everceyu@gmail.com"
+                }
+            ],
+            "description": "UEditor integration for Laravel.",
+            "time": "2019-10-02T14:32:07+00:00"
+        },
+        {
+            "name": "codingyu/ueditor",
+            "version": "3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel-admin-extensions/UEditor.git",
+                "reference": "9ba2d209317b1f396a846a6b202e7a0fdd722c12"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel-admin-extensions/UEditor/zipball/9ba2d209317b1f396a846a6b202e7a0fdd722c12",
+                "reference": "9ba2d209317b1f396a846a6b202e7a0fdd722c12",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "codingyu/laravel-ueditor": "~2.0",
+                "encore/laravel-admin": "~1.6",
+                "php": ">=7.0.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~6.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Codingyu\\Ueditor\\UeditorServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Codingyu\\Ueditor\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "codingyu",
+                    "email": "everceyu@gmail.com"
+                }
+            ],
+            "description": "UEditor extension for laravel-admin",
+            "homepage": "https://github.com/codingyu/UEditor",
+            "keywords": [
+                "extension",
+                "laravel-admin",
+                "ueditor"
+            ],
+            "time": "2019-10-02T14:48:14+00:00"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -1224,6 +1339,75 @@
             "time": "2019-09-03T16:44:30+00:00"
         },
         {
+            "name": "laravel/telescope",
+            "version": "v2.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/telescope.git",
+                "reference": "a4d11d6dcc16fab19c75faa1fcfa0a688dfa2bd8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/telescope/zipball/a4d11d6dcc16fab19c75faa1fcfa0a688dfa2bd8",
+                "reference": "a4d11d6dcc16fab19c75faa1fcfa0a688dfa2bd8",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "ext-json": "*",
+                "laravel/framework": "~5.8.0|^6.0|^7.0",
+                "moontoast/math": "^1.1",
+                "php": "^7.1.3",
+                "symfony/var-dumper": "^4.1|^5.0"
+            },
+            "require-dev": {
+                "ext-gd": "*",
+                "orchestra/testbench": "^3.8|^4.0|^5.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.x-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Laravel\\Telescope\\TelescopeServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravel\\Telescope\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                },
+                {
+                    "name": "Mohamed Said",
+                    "email": "mohamed@laravel.com"
+                }
+            ],
+            "description": "An elegant debug assistant for the Laravel framework.",
+            "keywords": [
+                "debugging",
+                "laravel",
+                "monitoring"
+            ],
+            "time": "2019-12-13T14:44:09+00:00"
+        },
+        {
             "name": "laravel/tinker",
             "version": "v1.0.10",
             "source": {
@@ -1540,6 +1724,61 @@
                 "psr-3"
             ],
             "time": "2019-11-13T10:00:05+00:00"
+        },
+        {
+            "name": "moontoast/math",
+            "version": "1.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ramsey/moontoast-math.git",
+                "reference": "c2792a25df5cad4ff3d760dd37078fc5b6fccc79"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ramsey/moontoast-math/zipball/c2792a25df5cad4ff3d760dd37078fc5b6fccc79",
+                "reference": "c2792a25df5cad4ff3d760dd37078fc5b6fccc79",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "ext-bcmath": "*",
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "jakub-onderka/php-parallel-lint": "^0.9.0",
+                "phpunit/phpunit": "^4.7|>=5.0 <5.4",
+                "satooshi/php-coveralls": "^0.6.1",
+                "squizlabs/php_codesniffer": "^2.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Moontoast\\Math\\": "src/Moontoast/Math/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Ben Ramsey",
+                    "email": "ben@benramsey.com",
+                    "homepage": "https://benramsey.com"
+                }
+            ],
+            "description": "A mathematics library, providing functionality for large numbers",
+            "homepage": "https://github.com/ramsey/moontoast-math",
+            "keywords": [
+                "bcmath",
+                "math"
+            ],
+            "time": "2017-02-16T16:54:46+00:00"
         },
         {
             "name": "nesbot/carbon",
