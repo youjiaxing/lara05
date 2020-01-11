@@ -26,9 +26,9 @@ class InvalidRequestException extends Exception
     public function render($request)
     {
         if ($request->expectsJson()) {
-            return response()->json(['msg' => $this->getMessage()], $this->getCode());
+            return response()->json(['message' => $this->getMessage()], $this->getCode());
         }
 
-        return view('pages.error', ['msg' => $this->getMessage(), 'code' => $this->getCode()]);
+        return view('pages.error', ['message' => $this->getMessage(), 'code' => $this->getCode()]);
     }
 }

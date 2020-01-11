@@ -13,8 +13,8 @@
 
                     <div class="float-right">
                         <select class="form-control" name="sort" id="sort_select">
-                            <option style="">排序方式</option>
-                            <option value="id:desc" selected>最新排序</option>
+                            <option style="display: none">排序方式</option>
+                            <option value="id:desc">最新排序</option>
                             <option value="price_min:asc">价格升序</option>
                             <option value="price_max:desc">价格降序</option>
                             <option value="sold_count:asc">销量升序</option>
@@ -31,7 +31,8 @@
                 @foreach($products as $product)
                     <div class="col mb-4">
                         <div class="card products-list-item">
-                            <a href="{{ route('products.show', [$product->id]) }}"><img class="card-img-top" src="{{ $product->imageUrl }}" alt="Card image cap"></a>
+                            <a href="{{ route('products.show', [$product->id]) }}"><img class="card-img-top" src="{{ $product->imageUrl }}"
+                                                                                        alt="Card image cap"></a>
                             <div class="card-body">
                                 <div class="product-price text-danger">
                                     <i class="fa fa-rmb" aria-hidden="true"></i>
@@ -75,11 +76,10 @@
             $('#query_form input[name=search]').val(filters.search);
 
             var sort_select = $('#sort_select');
-            // console.log("init sort: " + init_sort);
 
-            // if (!!init_sort) {
-                sort_select.val(init_sort);
-            // }
+            // console.log(init_sort);
+            sort_select.val(init_sort);
+            // console.log(sort_select.val());
 
             sort_select.on('change', function (event) {
                 $('#query_form').submit();

@@ -6,12 +6,10 @@
         @foreach($products as $product)
             <div class="col">
                 <div class="card h-100">
-                    <img src="{{ $product->imageUrl }}" alt="" class="card-img-top">
+                    <a href="{{ route('products.show', [$product->id]) }}"><img src="{{ $product->imageUrl }}" alt="" class="card-img-top"></a>
                     <div class="card-body">
                         <div class="price font-weight-bold text-danger"><i class="fa fa-rmb" aria-hidden="true"></i> {{ $product->price_min }} ~ {{ $product->price_max }}</div>
-                        <div class="">{{ $product->title }}</div>
-{{--                        <h3 class="card-text">{{ $product->title }}</h3>--}}
-                        {{--                        <p class="card-text">Text</p>--}}
+                        <div class=""><a class="text-decoration-none text-reset" href="{{ route('products.show', [$product->id]) }}">{{ $product->title }}</a></div>
                     </div>
                     <div class="card-footer bg-white">
                         <div class="clearfix">

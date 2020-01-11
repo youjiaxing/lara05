@@ -6,10 +6,18 @@ use Exception;
 
 class InternalException extends Exception
 {
+    /**
+     * @var string
+     */
     protected $msgForUser;
 
     /**
-     * InvalidRequestException constructor.
+     * InternalException constructor.
+     *
+     * @param string          $realMsg
+     * @param string          $msgForUser   给用户的错误提示
+     * @param int             $code
+     * @param \Throwable|null $previous
      */
     public function __construct($realMsg, $msgForUser = '系统内部错误', $code = 500, \Throwable $previous = null)
     {
@@ -27,9 +35,9 @@ class InternalException extends Exception
     public function render($request)
     {
         if ($request->expectsJson()) {
-            return response()->json(['msg' => $this->msgForUser], $this->getCode());
+            return response()->json(['message' => $this->msgForUser], $this->getCode());
         }
 
-        return view('pages.error', ['msg' => $this->msgForUser, 'code' => $this->getCode()]);
+        return view('pages.error', ['message' => $this->msgForUser, 'code' => $this->getCode()]);
     }
 }

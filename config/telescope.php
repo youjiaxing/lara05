@@ -92,7 +92,9 @@ return [
     */
 
     'ignore_paths' => [
-        '/js/popper.js.map',
+        // 不生效??
+        'js/popper.js.map',
+        'holder.js',
     ],
 
     'ignore_commands' => [

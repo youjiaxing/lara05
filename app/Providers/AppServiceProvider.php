@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Extensions\Cache\FileStore;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +15,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
     }
 
     /**
@@ -23,6 +24,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Cache::extend('file2', function ($app, $config) {
+            return Cache::repository(new FileStore($app['files'], $config['path']));
+        });
     }
 }

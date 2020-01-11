@@ -48,7 +48,8 @@ return [
         ],
 
         'file' => [
-            'driver' => 'file',
+//            'driver' => 'file',
+            'driver' => 'file2',
             'path' => storage_path('framework/cache/data'),
         ],
 

@@ -30,6 +30,9 @@
                     <li class="nav-item"><a href="{{ route('login') }}" class="nav-link">{{ __('Login') }}</a></li>
                     <li class="nav-item"><a href="{{ route("register") }}" class="nav-link">@lang("Sign Up")</a></li>
                 @else
+                    <li class="nav-item pt-1">
+                        <a href="{{ route('cart.index') }}" class="nav-link"><i class="fa fa-shopping-cart" aria-hidden="true"></i> 购物车</a>
+                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
                            aria-expanded="false">
@@ -37,6 +40,7 @@
                                  alt="" width="30" height="30"> {{ \Illuminate\Support\Facades\Auth::user()->name }}
                         </a>
                         <div class="dropdown-menu">
+                            <a href="{{ route('orders.index') }}" class="dropdown-item">我的订单</a>
                             <a href="{{ route('user_addresses.index') }}" class="dropdown-item">收货地址</a>
                             <a href="{{ route('products.favorites') }}" class="dropdown-item">收藏列表</a>
 

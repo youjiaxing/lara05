@@ -35,11 +35,10 @@ class ProductController extends Controller
                             ->orWhere('description', 'like', $searchPattern);
                     });
             });
-
         }
 
         // 排序
-        $sort = "";
+        $sort = "id:desc";
         if ($request->filled('sort')) {
             $sort = $request->input('sort');
             if (in_array($sort, [

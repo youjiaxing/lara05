@@ -56,7 +56,8 @@
                         数量
                     </div>
                     <div class="col-sm-2">
-                        <input type="text" class="form-control form-control-sm" name="count" id="" aria-describedby="helpId" placeholder="" value="1">
+                        <input type="number" class="form-control form-control-sm" name="quantity" id="" aria-describedby="helpId" placeholder="" value="1"
+                               min="1" max="{{ $product->skus->max('stock') }}">
                     </div>
                     <div class="col-sm-9 ml-0 pl-0">
                         <label for="">件, 库存 <span id="stock_label">0</span> 件</label>
@@ -109,12 +110,18 @@
         var is_favor = {!! json_encode($isFavor) !!};
         var sku_selected;
 
+
         console.debug(skus);
 
         function init_sku_select(radio) {
             $('#price_label').text(radio.dataset.price);
             $('#stock_label').text(radio.dataset.stock);
-            sku_selected = radio.dataset.id;
+            $('input[name=count]').attr('max', radio.dataset.stock).attr('min', Math.min(1, radio.dataset.stock));
+            sku_selected = {
+                id: radio.dataset.id,
+                stock: radio.dataset.stock,
+                price: radio.dataset.price,
+            };
             console.log(radio);
         }
 
@@ -150,6 +157,7 @@
             }
         }
 
+        // 收藏按钮操作
         $('#btn_favor').on('click', function (event) {
             // 取消收藏
             axios.request({
@@ -157,31 +165,21 @@
                 method: is_favor ? "delete" : "post"
             }).then(function (response) {
                 init_favor_btn(!is_favor);
-            }).catch(function (error) {
-                console.log(error);
-                if (error.response) {
-                    if (error.response.status == 401) {
-                        swal({
-                            title: "未登录",
-                            icon: "info"
-                        }).then(function () {
-                            window.location = "{{ route('login') }}";
-                        });
-                    } else {
-                        swal({
-                            title: "发生错误了 " + error.response.status,
-                            text: error.response.data.message,
-                            icon: "error"
-                        })
-                    }
-                } else {
-                    swal({
-                        title: "发生错误了",
-                        text: error.message,
-                        icon: "error"
-                    })
-                }
             });
+        });
+
+        // 加入购物车操作
+        $('#btn_add_to_cart').on('click', function (event) {
+            var quantity = $('input[name=quantity]').val();
+            if (quantity < 1) {
+                swal("数量必须大于0", "", "warning");
+            } else {
+                console.log("加入购物车数量:", quantity);
+                axios.post("/carts/" + sku_selected.id, {quantity: quantity})
+                    .then(function (response) {
+                        swal("已添加到购物车", "", "success");
+                    });
+            }
         });
     </script>
 @stop

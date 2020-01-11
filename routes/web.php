@@ -32,4 +32,14 @@ Route::middleware(['verified'])->group(function () {
     Route::delete('/products/{product}/favor', 'ProductController@disfavor')->name('products.disfavor');
     // 商品收藏列表
     Route::get("/products/favorites", "ProductController@favorites")->name('products.favorites');
+
+    // 购物车
+    Route::get("/carts", 'CartController@index')->name('cart.index');
+    Route::delete("/carts/{cart}", 'CartController@destroy')->name('cart.destroy');
+    Route::post("/carts/{product_sku}", 'CartController@add')->name('cart.add');
+
+    // 订单
+    Route::post('/orders', 'OrderController@store')->name('orders.store');
+    Route::get('/orders', 'OrderController@index')->name('orders.index');
+    Route::get('/orders/{order}', 'OrderController@show')->name('orders.show');
 });

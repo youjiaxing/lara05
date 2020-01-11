@@ -6,6 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
+/**
+ * Class Product
+ * @package App\Models
+ * @property boolean     $is_sale
+ * @property-read string $image_url 商品图
+ * @property string      $title
+ */
 class Product extends Model
 {
     protected $fillable = [

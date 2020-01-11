@@ -11,7 +11,8 @@ try {
     window.$ = window.jQuery = require('jquery');
 
     require('bootstrap');
-} catch (e) {}
+} catch (e) {
+}
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
@@ -22,6 +23,53 @@ try {
 window.axios = require('axios');
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+window.axios.interceptors.response.use(
+    function (response) {
+        return response;
+    },
+    function (error) {
+        if (error.response) {
+            // 用户未登录, 跳转到登录页面
+            if (error.response.status == 401) {
+                swal({
+                    title: "未登录",
+                    icon: "info"
+                }).then(function () {
+                    window.location = "/login";
+                });
+            } else if (error.response.status == 422 && error.response.data.errors) {
+                let errors = error.response.data.errors;
+                let msgArr = [];
+                for (var i1 in errors) {
+                    for (var i2 in errors[i1]) {
+                        msgArr.push(errors[i1][i2]);
+                    }
+                }
+
+                let msg = "<div>" + msgArr.join("<br>") + "</div>";
+
+                swal({
+                    title: "出错",
+                    content: $(msg)[0],
+                    icon: "error",
+                });
+            } else {
+                swal({
+                    title: "发生错误(" + error.response.status + ")",
+                    text: error.response.data.message,
+                    icon: "error"
+                })
+            }
+        } else {
+            swal({
+                title: "未知错误",
+                text: error.message,
+                icon: "error"
+            })
+        }
+
+        return Promise.reject(error);
+    });
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

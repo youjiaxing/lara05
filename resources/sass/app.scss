@@ -33,6 +33,11 @@ body {
     margin-bottom: 60px;
 }
 
+// 通用
+.text-delete {
+    text-decoration-line: line-through !important;
+}
+
 .footer {
     position: absolute;
     bottom: 0;

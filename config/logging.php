@@ -34,6 +34,13 @@ return [
     */
 
     'channels' => [
+        // 队列日志专用
+        'queue' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/queue.log'),
+            'level' => 'debug',
+        ],
+
         'stack' => [
             'driver' => 'stack',
             'channels' => ['daily'],
