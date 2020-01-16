@@ -22,7 +22,7 @@ class OrderController extends Controller
             user(),
             $address,
             $input['items'],
-            $input['remark']
+            empty($input['remark']) ? "" : $input['remark']
         );
 
 //        return response()->json(['order_id' => $order->id, 'redirect' => route('orders.show', [$order->id])], Response::HTTP_CREATED);
@@ -39,7 +39,7 @@ class OrderController extends Controller
 
     public function show(Order $order)
     {
-        $this->authorize('view', $order);
+        $this->authorize('own', $order);
         $order->load('orderItems.productSku.product');
         return view('orders.show', ['order' => $order]);
     }

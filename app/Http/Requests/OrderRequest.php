@@ -28,7 +28,7 @@ class OrderRequest extends Request
     {
         return [
             'address_id' => ['required', Rule::exists('user_addresses', 'id')->where('user_id', Auth::id())],
-            'remark' => ['nullable', 'string', 'max:999'],
+            'remark' => ['nullable', 'max:999'],
             'items' => ['required', 'array', 'min:1'],
             'items.*.amount' => ['required', 'int', 'min:1'],
             'items.*.product_sku_id' => [

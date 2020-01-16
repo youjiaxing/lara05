@@ -79,6 +79,10 @@ class Order extends Model
         self::EXPRESS_STATUS_RECEIVED => '已送达',
     ];
 
+    // 支付渠道
+    const PAYMENT_ALIPAY = 'alipay';
+    const PAYMENT_WECHAT = 'wechat';
+
     protected $fillable = [
         'no',
         'user_id',
@@ -172,6 +176,15 @@ class Order extends Model
     public function isPaid()
     {
         return !is_null($this->paid_at);
+    }
+
+    /**
+     * 订单是否已关闭
+     * @return bool
+     */
+    public function isClose()
+    {
+        return $this->status === self::ORDER_STATUS_CLOSED;
     }
 
     public function getFullAddressAttribute()

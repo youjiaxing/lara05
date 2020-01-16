@@ -7,6 +7,7 @@
 
 namespace App\Services;
 
+use App\Events\OrderPaid;
 use App\Exceptions\InvalidRequestException;
 use App\Jobs\CloseTimeoutOrder;
 use App\Models\Order;
@@ -151,5 +152,30 @@ class OrderService
         $orderNoXor = substr($orderNo, 10);
         $orderNoInc = $orderNoXor ^ config('shop.order_xor') ^ (static::ORDER_NO_XOR_MAX - (int)$dateTimeXor % static::ORDER_NO_XOR_MAX);
         return intval($dateTime . str_pad($orderNoInc, 8, '0', STR_PAD_LEFT));
+    }
+
+    public function paid(Order $order, $paymentMethod, $paymentNo, $paidAt)
+    {
+        // 业务逻辑处理
+        if ($order->isPaid()) {
+            // TODO 可能需要退款
+            throw new \Exception("订单重复支付");
+        }
+
+        if ($order->status != Order::ORDER_STATUS_CREATED) {
+            //TODO 可能需要退款
+            throw new \Exception("订单状态错误");
+        }
+
+        // 更新订单状态
+        $order->forceFill([
+            'paid_at' => $paidAt,
+            'payment_method' => $paymentMethod,
+            'payment_no' => $paymentNo,
+            'status' => Order::ORDER_STATUS_PAID,
+        ]);
+        $order->save();
+
+        OrderPaid::dispatch($order);
     }
 }

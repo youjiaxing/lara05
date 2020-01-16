@@ -11,3 +11,16 @@ function user()
 {
     return \Illuminate\Support\Facades\Auth::user();
 }
+
+/**
+ * @return Yansongda\Pay\Gateways\Alipay
+ */
+function alipay()
+{
+    return app('alipay');
+}
+
+function wechat()
+{
+    return app('wechat');
+}

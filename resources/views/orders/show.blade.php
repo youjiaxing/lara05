@@ -14,10 +14,11 @@
                     @endif
             </div>
 
+            {{--根据订单状态显示特有状态--}}
             @switch($order->status)
                 {{--等待付款--}}
                 @case(\App\Models\Order::ORDER_STATUS_CREATED)
-                <button type="button" class="btn btn-primary">付款</button>
+                <a href="{{ route('payments.alipay', [$order->id]) }}" class="btn btn-primary">支付宝付款</a>
                 @break
 
                 {{--已付款, 等待发货--}}
@@ -122,7 +123,7 @@
                 <tr>
                     <td scope="row" style="width: 40%">
                         <div class="media">
-                            <a class="d-flex" href="#">
+                            <a class="d-flex" href="{{ route('products.show', [$product->id]) }}">
                                 <img src="{{ $product->image_url }}" alt="" width="75px" height="75px">
                             </a>
                             <div class="media-body">
