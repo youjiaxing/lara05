@@ -11,6 +11,11 @@ Route::group([
 ], function (Router $router) {
 
     $router->get('/', 'HomeController@index')->name('admin.home');
-    $router->resource('users', 'UsersController');
-    $router->resource('products', 'ProductsController');
+    $router->resource('users', 'UsersController')->names('admin.users');
+    $router->resource('products', 'ProductsController')->names('admin.products');
+
+    $router->post('orders/{order}/express', 'OrdersController@express')->name('admin.orders.express');
+    $router->resource('orders', 'OrdersController')->names('admin.orders');
+    $router->post('order-refund/{orderRefund}/reject', 'OrderRefundController@reject')->name('admin.orderRefund.reject');
+    $router->post('order-refund/{orderRefund}/accept', 'OrderRefundController@accept')->name('admin.orderRefund.accept');
 });

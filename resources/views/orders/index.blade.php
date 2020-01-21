@@ -71,6 +71,12 @@
                                         </td>
                                         <td rowspan="{{ count($order->orderItems) }}">
                                             <a href="{{ route('orders.show', [$order->id]) }}" class="btn btn-primary btn-sm">查看详情</a>
+
+                                            @if ($order->isReviewed())
+                                                <a class="btn btn-success btn-sm" href="{{ route('orders.review', [$order->id]) }}" role="button">查看评价</a>
+                                            @elseif($order->status == \App\Models\Order::ORDER_STATUS_RECEIVED)
+                                                <a class="btn btn-success btn-sm" href="{{ route('orders.review', [$order->id]) }}" role="button">评价</a>
+                                            @endif
                                         </td>
                                     @endif
                                 </tr>

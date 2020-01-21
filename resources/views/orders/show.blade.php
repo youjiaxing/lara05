@@ -2,16 +2,50 @@
 @section("title", "订单详情")
 
 @section("content")
-    @php /* @var \App\Models\Order $order */ @endphp
+    @php
+        /* @var \App\Models\Order $order */
+        $orderRefund = $order->last_order_refund;
+    @endphp
 
     <div class="row text-center">
         {{--订单状态--}}
         <div class="col-sm-12">
             <div class="font-weight-bolder">
-                <h3>{{ $order->status_map }}</h3>
-                @if ($order->refund_status != \App\Models\Order::REFUND_STATUS_PENDING)
-                    <h4>{{ $order->refund_status_map }}</h4>
-                    @endif
+                <h3>订单状态: {{ $order->status_map }}</h3>
+
+                @if (!$orderRefund)
+                    <div class="alert alert-info" role="alert">
+                        <strong>当前未发生退款</strong>
+                    </div>
+                @else
+                    <div class="alert alert-info" role="alert">
+
+                        @switch($orderRefund->status)
+                            @case(\App\Models\OrderRefund::STATUS_CREATED)
+                            <div>退款申请等待处理中.</div>
+
+                            @break
+
+                            @case(\App\Models\OrderRefund::STATUS_RETURN)
+                            <div>退款申请已接受, 请尽快退回相关商品.</div>
+                            @break
+
+                            @case(\App\Models\OrderRefund::STATUS_REJECT)
+                            <div>退款被拒绝</div>
+                            <div>订单退款状态: {{ $order->refund_status_map }}</div>
+                            @break
+
+                            @case(\App\Models\OrderRefund::STATUS_SUCCESS)
+                            <div>退款成功</div>
+                            <div>订单退款状态: {{ $order->refund_status_map }}</div>
+                            @break
+                        @endswitch
+
+                        <div>
+                            详情请点击 <a href="{{ route('orderRefunds.show', ['order' => $order->id, 'order_refund' => $orderRefund->id]) }}">退款单</a> 查看
+                        </div>
+                    </div>
+                @endif
             </div>
 
             {{--根据订单状态显示特有状态--}}
@@ -23,18 +57,24 @@
 
                 {{--已付款, 等待发货--}}
                 @case(\App\Models\Order::ORDER_STATUS_PAID)
-                <a name="" id="" class="btn btn-danger" href="#" role="button">申请退款</a>
+                <a name="" id="" class="btn btn-danger" href="{{ route('orderRefunds.create', [$order]) }}" role="button">申请退款</a>
                 @break
 
                 {{--已发货--}}
                 @case(\App\Models\Order::ORDER_STATUS_DELIVERED)
-                <button type="button" class="btn btn-primary">确认收货</button>
-                <a name="" id="" class="btn btn-danger" href="#" role="button">申请退款</a>
+                <button type="button" class="btn btn-primary" id="received_btn">确认收货</button>
+                <a name="" id="" class="btn btn-danger" href="{{ route('orderRefunds.create', [$order]) }}" role="button">申请退款</a>
                 @break
 
                 {{--已完成--}}
                 @case(\App\Models\Order::ORDER_STATUS_RECEIVED)
-
+                <a href="{{ route('orders.review', [$order->id]) }}" class="btn btn-success btn-sm">
+                    @if ($order->isReviewed())
+                        查看评价
+                    @else
+                        评价
+                    @endif
+                </a>
                 @break
 
                 {{--已关闭(订单未完成)--}}
@@ -104,7 +144,7 @@
 
     {{--包含的所有商品--}}
     <div class="row mt-4">
-        <table class="table">
+        <table class="table table-hover">
             <thead>
             <tr>
                 <th>商品</th>
@@ -146,8 +186,50 @@
             </tbody>
         </table>
     </div>
+
+    @if ($order->express_status != \App\Models\Order::EXPRESS_STATUS_PENDING)
+        <hr>
+        <div class="row mt-3">
+            <div class="col-md-6 col-12">
+                <h3>物流信息</h3>
+                <div class="d-table">
+                    <div class="d-table-row">
+                        <div class="d-table-cell">物流公司</div>
+                        <div class="d-table-cell">{{ $order->express_company }}</div>
+                    </div>
+                    <div class="d-table-row">
+                        <div class="d-table-cell">物流单号</div>
+                        <div class="d-table-cell">{{ $order->express_no }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-12">
+                <h3>物流跟踪信息</h3>
+                当前暂不支持
+            </div>
+        </div>
+    @endif
 @stop
 
 @section("script")
-
+    <script>
+        $(function () {
+            $('#received_btn').on('click', function () {
+                swal({
+                    title: "确认已经收到商品?",
+                    icon: "warning",
+                    buttons: ["取消", "确认收货"],
+                    dangerMode: true,
+                }).then(function (confirm) {
+                    console.log(confirm);
+                    if (confirm) {
+                        axios.post("{{ route('orders.receive', [$order->id]) }}")
+                            .then(function (response) {
+                                window.location.reload();
+                            });
+                    }
+                });
+            })
+        });
+    </script>
 @stop

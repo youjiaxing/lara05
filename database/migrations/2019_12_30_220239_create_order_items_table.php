@@ -34,9 +34,13 @@ class CreateOrderItemsTable extends Migration
             // 评价相关
             $table->unsignedInteger('review_rating')->nullable()->comment('评价分数, 1~5');
             $table->string('review_content', 1000)->default('')->comment("评价内容");
+            $table->timestamp('reviewed_at')->nullable()->comment("评论时间");
 
             $table->json('extra')->nullable();
             $table->timestamps();
+
+            // 商品评价展示
+            $table->index(['product_id', 'reviewed_at']);
         });
     }
 

@@ -69,7 +69,7 @@
 @section("script")
     <script>
         $(function () {
-            var filters = {!! json_encode($filters) !!};
+            var filters = {!! json_encode(empty($filters) ? ['sort'=>'id:desc', 'search'=>''] : $filters) !!};
             console.log(filters);
             var init_sort = filters.sort;
 

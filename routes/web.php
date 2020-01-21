@@ -42,11 +42,25 @@ Route::middleware(['verified'])->group(function () {
     Route::post('/orders', 'OrderController@store')->name('orders.store');
     Route::get('/orders', 'OrderController@index')->name('orders.index');
     Route::get('/orders/{order}', 'OrderController@show')->name('orders.show');
+    Route::post('/orders/{order}/receive', 'OrderController@receive')->name('orders.receive');
+    //订单-评价
+    Route::get('/orders/{order}/review', 'OrderController@reviewShow')->name('orders.review');
+    Route::post('/orders/{order}/review', 'OrderController@reviewStore')->name('orders.review');
 
     // 订单-支付
     // 支付宝前端回调
     Route::get('/payments/alipay/return', 'PaymentController@alipayReturn')->name('payments.alipay.return');
     Route::get('/payments/{order}/alipay', 'PaymentController@alipay')->name('payments.alipay');
+
+    // 退款
+    Route::get('/refunds/{order}/create', 'OrderRefundController@create')->name('orderRefunds.create');
+    // 部分退款
+    Route::post('/refunds/{order}/part', 'OrderRefundController@refundPart')->name('orderRefunds.refundPart');
+    // 全部退款
+    Route::post('/refunds/{order}/all', 'OrderRefundController@refundAll')->name('orderRefunds.refundAll');
+    Route::get('/refunds/{order}/{order_refund}', 'OrderRefundController@show')->name('orderRefunds.show');
+
 });
+
 // 支付宝服务端回调
 Route::post('/payments/alipay/notify', 'PaymentController@alipayNotify')->name('payments.alipay.notify');

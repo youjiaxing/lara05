@@ -68,7 +68,7 @@ body {
             max-height: 200px;
         }
 
-        a,&:link, &:active, &:hover, &:visited {
+        a, &:link, &:active, &:hover, &:visited {
             text-decoration: none;
             color: inherit;
         }
@@ -104,6 +104,40 @@ body {
         &.active, &.focus {
             border-color: rgba(238, 23, 57, 0.74);
             box-shadow: 0 0 0 0.1rem rgba(238, 23, 57, 0.74);
+        }
+    }
+}
+
+// 订单评价页
+.orders-review-page {
+    .rate-area-form {
+        float: left;
+        padding-left: 5px;
+
+        label {
+            float: right;
+            cursor: pointer;
+            color: lightgrey;
+            margin-right: 3px;
+
+            &:after {
+                content: '★';
+                font-size: 2em;
+            }
+        }
+
+        input:checked ~ label,
+        label:hover,
+        label:hover ~ label {
+            color: gold;
+        }
+    }
+
+    .rate-area-show {
+        float: left;
+        padding-left: 0;
+        i.fa {
+            color: gold;
         }
     }
 }

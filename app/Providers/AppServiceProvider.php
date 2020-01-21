@@ -25,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
             $config['return_url'] = route('payments.alipay.return');
 
             if ($app->environment('local')) {
-                $config['notify_url'] = 'http://requestbin.net/r/1jij8gy1'; // 内网临时用的第三方调试地址
+                $config['notify_url'] = config('pay.alipay.notify_url_local'); // 内网临时用的第三方调试地址
             } else {
                 $config['notify_url'] = route('payments.alipay.notify');
             }

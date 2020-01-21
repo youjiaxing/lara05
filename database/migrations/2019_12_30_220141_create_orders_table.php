@@ -41,7 +41,8 @@ class CreateOrdersTable extends Migration
             $table->decimal('refund_amount',10,2)->default(0)->comment('退款金额, 注意不得超过 paid_amount');
 
             // 评价相关
-            $table->timestamp('reviewed_at')->nullable()->comment('订单评价时间');
+            // $table->timestamp('reviewed_at')->nullable()->comment('订单评价时间');
+            $table->string('review_status')->default(\App\Models\Order::REVIEW_STATUS_PENDING)->comment("评价状态");
 
             $table->json('extra')->nullable();
             $table->timestamps();

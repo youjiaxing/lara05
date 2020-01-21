@@ -1,10 +1,20 @@
+<?php
+/**
+ *
+ */
+?>
+
 @extends("layouts.app")
-@section("title", "订单详情")
+@section("title", "")
 
 @section("content")
 
-    @stop
+@stop
 
 @section("script")
 
-    @stop
+@stop
+
+@section("style")
+
+@stop

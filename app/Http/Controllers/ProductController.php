@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\InvalidRequestException;
+use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
@@ -96,7 +97,14 @@ class ProductController extends Controller
             }
         }
 
-        return view('products.show', ['product' => $product, 'isFavor' => $isFavor]);
+        $reviews = OrderItem::query()
+            ->where('product_id', $product->id)
+            ->whereNotNull('reviewed_at')
+            ->orderByDesc('reviewed_at')
+            ->with(['user', 'productSku'])
+            ->paginate(null, ['user_id', 'product_sku_id', 'reviewed_at', 'review_rating', 'review_content']);
+
+        return view('products.show', ['product' => $product, 'isFavor' => $isFavor, 'reviews' => $reviews]);
     }
 
     public function favor(Product $product)

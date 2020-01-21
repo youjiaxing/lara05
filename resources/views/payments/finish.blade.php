@@ -26,6 +26,7 @@
         var delay_second_span = $('#delay_second');
         var count_down_id = setInterval(function () {
             delay -= 1;
+            console.log("delay: " + delay);
 
             if (delay <= 0) {
                 clearInterval(this);

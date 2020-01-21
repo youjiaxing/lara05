@@ -74,27 +74,59 @@
         </div>
     </div>
 
+
+
     <div class="row">
         <div class="card w-100 mt-3">
             <div class="card-header">
                 <ul class="nav nav-tabs card-header-tabs">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#product-detail-pane" data-toggle="tab">商品详情</a>
+                        <a class="nav-link @if(!request()->has('page')) active @endif" href="#product-detail-pane" data-toggle="tab">商品详情</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#product-review-pane" data-toggle="tab">用户评价</a>
+                        <a class="nav-link @if(request()->has('page')) active @endif" href="#product-review-pane" data-toggle="tab">用户评价</a>
                     </li>
                 </ul>
             </div>
             <div class="card-body">
                 <div class="tab-content">
-                    <div class="tab-pane fade show active" id="product-detail-pane">
+                    <div class="tab-pane fade @if(!request()->has('page')) show active @endif" id="product-detail-pane">
                         {{-- 商品详情 --}}
                         {!! $product->description !!}
                     </div>
-                    <div class="tab-pane fade" id="product-review-pane">
-                        {{-- 用户评价 --}}
-                        123
+
+                    <div class="tab-pane fade @if(request()->has('page')) show active @endif" id="product-review-pane">
+                        @php /* @var \Illuminate\Pagination\Paginator $reviews */ @endphp
+
+                        @if ($reviews->isNotEmpty())
+                            {{-- 用户评价 --}}
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>用户</th>
+                                    <th>商品</th>
+                                    <th>评分</th>
+                                    <th>评价内容</th>
+                                    <th>时间</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($reviews as $review)
+                                    <tr>
+                                        <td scope="row">{{ $review->user->name }}</td>
+                                        <td>{{ $review->productSku->title }}</td>
+                                        <td>{!! str_repeat('<i class="fa fa-star" style="color:gold;"></i>', $review->review_rating) !!}</td>
+                                        <td>{{ $review->review_content }}</td>
+                                        <td>{{ $review->reviewed_at }}</td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+
+                            {!! $reviews->links() !!}
+                        @else
+                            <h3>暂无评价 o(*￣︶￣*)o</h3>
+                        @endif
                     </div>
                 </div>
             </div>

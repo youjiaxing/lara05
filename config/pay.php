@@ -5,6 +5,8 @@ return [
         'app_id' => '2016093000630075',
         // 异步回调url
         'notify_url' => '',
+        // 异步回调URL - local调试
+        'notify_url_local' => 'http://requestbin.net/r/t4pwe3t4',
         // 前端回调url
         'return_url' => '',
         'ali_public_key' => 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAn55NyypZRVYW3jYRtiO93tl7XK+Z7iXc7iCmMmchIuGkHOs/1Afa6vCGhTxocgqeWNOmpjmxi8O3uKuDNjOtl4Idz+1Fvb4SY7wHivcZMyJVDOqp0JxhqOxwwEJzpOXPWEQuXPo47FigIwziPzi8HRJ7F0GphVTT7bpHZIzwXfUoF3mkfmHvwO+bOYf6uskyHEfdYzILQzDX0eP0cTCofvYJDJjSG+UhNJY4JukONwHLmeeZe+fiolZ2PKeKNHDbf5hXP588EhMNYBPH6PFScIJWnU3u4R5l292EYFDSLtAFZ6IROB5g10KNCCkN7h9oujdNF7C7nyBws9i739PMywIDAQAB',
