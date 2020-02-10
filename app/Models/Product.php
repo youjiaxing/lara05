@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 /**
  * Class Product
  * @package App\Models
- * @property boolean     $is_sale
+ * @property boolean     $is_sale   是否上架
  * @property-read string $image_url 商品图
  * @property string      $title
  */

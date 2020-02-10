@@ -8,8 +8,10 @@
 namespace App\Services;
 
 use App\Events\OrderPaid;
+use App\Exceptions\InternalException;
 use App\Exceptions\InvalidRequestException;
 use App\Jobs\CloseTimeoutOrder;
+use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\ProductSku;
@@ -25,39 +27,67 @@ class OrderService
     /**
      * 新增订单
      *
-     * @param User        $user
-     * @param UserAddress $address
-     * @param array       $items
-     * @param string      $remark
+     * @param User             $user
+     * @param UserAddress      $address
+     * @param array|Collection $items = [
+     *                                ['quantity' => 1, 'product_sku_id' => 123],
+     *                                ]
+     * @param string           $remark
+     * @param Coupon|null      $coupon
      *
      * @return Order
-     * @throws \Exception|\Throwable
-     *
+     * @throws \App\Exceptions\InvalidCouponException
      */
-    public function store(User $user, UserAddress $address, array $items, string $remark)
+    public function store(User $user, UserAddress $address, $items, string $remark, Coupon $coupon = null)
     {
-        // 根据 sku_id 排序, 减少发生死锁概率
-        $items = collect($items)->sortBy('product_sku_id', SORT_NUMERIC);
+        $couponService = app(CouponService::class);
+        if ($coupon) {
+            $couponService->checkValid($coupon, null, $user);
+        }
 
-        $order = DB::transaction(function () use ($user, $address, $items, $remark) {
-            $productSkus = ProductSku::query()->whereIn('id', $items->pluck('product_sku_id'))->get()->keyBy('id');
+        $items = collect($items)->keyBy('product_sku_id')->toArray();
+
+        $order = DB::transaction(function () use ($coupon, $user, $address, &$items, $remark, $couponService) {
+            // 查找本次要购买的商品SKU, 并校验是否都是有效的
+            $productSkus = ProductSku::query()->whereIn('id', array_keys($items))->orderBy('id')->with('product')->get()->keyBy('id');
             if ($productSkus->count() != count($items)) {
                 throw new InvalidRequestException("存在无效的商品");
             }
 
-            // 更新地址最后使用时间
-            $address->touch();
-//            $address->update(['last_used_at' => now()]);
+            // 计算总金额, 初步确认商品状态及库存
+            foreach ($productSkus as $id => $productSku) {
+                /* @var ProductSku $productSku */
+                if (!$productSku->product->is_sale) {
+                    throw new InvalidRequestException("部分商品已下架");
+                }
+
+                if ($productSku->stock < $items[$id]['quantity']) {
+                    throw new InvalidRequestException("商品库存不足");
+                }
+
+                $items[$id]['total_amount'] = $productSku->price * $items[$id]['quantity'];
+                $items[$id]['discount_amount'] = 0;
+                $items[$id]['amount'] = $productSku->price;
+            }
+            $totalAmount = collect($items)->sum('total_amount'); // 订单原始总金额
+
+            // 确认优惠券使用
+            if ($coupon) {
+                $discountAmount = $couponService->calcDiscountAmount($coupon, $totalAmount);
+                if ($discountAmount > 0) {
+                    // 具体优惠金额分配
+                    $items = $couponService->allocateDiscount($items, $discountAmount);
+                } else {
+                    \Log::warning("无效的优惠券使用, 未产生减免费用", compact('coupon', 'totalAmount'));
+                    $coupon = null;
+                }
+            }
 
             // 创建订单子记录
             $orderItems = collect();
-            $requireSkuQuantities = $items->pluck('amount', 'product_sku_id');
             foreach ($productSkus as $productSku) {
-                $requireQuantities = $requireSkuQuantities[$productSku->id];
-                /* @var ProductSku $productSku */
-                if ($productSku->stock <= 0 || $productSku->stock < $requireQuantities) {
-                    throw new InvalidRequestException("商品库存不足");
-                }
+                $productSkuId = $productSku->id;
+                $requireQuantities = $items[$productSkuId]['quantity'];
 
                 $orderItem = new OrderItem();
                 $orderItem->forceFill([
@@ -67,13 +97,11 @@ class OrderService
 
                     'quantity' => $requireQuantities,
                     'amount' => $requireQuantities * $productSku->price,
-
+                    'paid_amount' => $items[$productSkuId]['total_amount'] - $items[$productSkuId]['discount_amount'],
                     'refund_status' => OrderItem::REFUND_STATUS_PENDING,
                     'refund_quantity' => 0,
                     'refund_amount' => 0,
                 ]);
-
-                $orderItem['paid_amount'] = $orderItem['amount'];
 
                 $orderItems->push($orderItem);
             }
@@ -86,26 +114,46 @@ class OrderService
 
                 'status' => Order::ORDER_STATUS_CREATED,
                 'amount' => $orderItems->sum('amount'),
+                'paid_amount' => $orderItems->sum('paid_amount'),
                 'address' => $address->only(['contact_name', 'contact_phone', 'zip', 'province', 'city', 'district', 'address']),
                 'remark' => $remark,
             ]);
-            $order['paid_amount'] = $order->amount;
 
+            // 健壮性判断
+            if ($order->paid_amount < 0.01) {
+                throw new InternalException(
+                    "出现异常订单,优惠后金额小于 0.01. data: "
+                    . json_encode(compact('order', 'orderItem', 'coupon', 'user'), JSON_UNESCAPED_UNICODE)
+                );
+            }
+
+            // 更新地址最后使用时间
+            $address->touch();
+
+            // 优惠券使用并校验
+            if ($coupon) {
+                $order->coupon()->associate($coupon);
+                if (!$coupon->use()) {
+                    throw new InvalidRequestException("优惠券已兑换完毕");
+                }
+            }
+
+            // 保存订单
             $order->save();
             $order->orderItems()->saveMany($orderItems);
 
             // 删除购物车相关商品
             /* @var CartService $cartService */
             $cartService = app(CartService::class);
-            $cartService->removeProductSkus($user, $productSkus);
+            //TODO
+            // $cartService->removeProductSkus($user, $productSkus);
 
             // 扣除库存
             foreach ($productSkus as $productSku) {
-                $requireQuantities = $requireSkuQuantities[$productSku->id];
-                if (!$productSku->decreaseStock($requireQuantities)) {
-                    // 库存不足
-                    throw new InvalidRequestException("商品库存不足");
-                }
+                //TODO
+                // if (!$productSku->decreaseStock($items[$productSku->id]['quantity'])) {
+                //     throw new InvalidRequestException("商品库存不足");
+                // }
             }
 
             return $order;
@@ -154,6 +202,16 @@ class OrderService
         return intval($dateTime . str_pad($orderNoInc, 8, '0', STR_PAD_LEFT));
     }
 
+    /**
+     * 更新订单状态为已支付
+     *
+     * @param Order $order
+     * @param       $paymentMethod
+     * @param       $paymentNo
+     * @param       $paidAt
+     *
+     * @throws \Exception
+     */
     public function paid(Order $order, $paymentMethod, $paymentNo, $paidAt)
     {
         // 业务逻辑处理

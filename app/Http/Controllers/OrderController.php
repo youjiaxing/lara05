@@ -7,6 +7,7 @@ use App\Events\OrderReviewed;
 use App\Exceptions\InvalidRequestException;
 use App\Http\Requests\OrderRequest;
 use App\Http\Requests\OrderReviewRequest;
+use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\UserAddress;
@@ -22,12 +23,22 @@ class OrderController extends Controller
     {
         $input = $request->validated();
         $address = UserAddress::query()->findOrFail($input['address_id']);
+        $coupon = !empty($input['coupon']) ? Coupon::query()->where('code', $input['coupon'])->firstOrFail() : null;
+
+        $items = collect();
+        foreach ($input['items'] as $item) {
+            $items->push([
+                'quantity' => $item['amount'],
+                'product_sku_id' => $item['product_sku_id'],
+            ]);
+        }
 
         $order = $orderService->store(
             user(),
             $address,
-            $input['items'],
-            empty($input['remark']) ? "" : $input['remark']
+            $items,
+            empty($input['remark']) ? "" : $input['remark'],
+            $coupon,
         );
 
 //        return response()->json(['order_id' => $order->id, 'redirect' => route('orders.show', [$order->id])], Response::HTTP_CREATED);

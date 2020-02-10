@@ -57,8 +57,9 @@ class OrderRequest extends Request
                         return $fail("商品库存不足");
                     }
 
-                }
+                },
             ],
+            'coupon' => ['nullable', 'string', 'between:1,255', Rule::exists('coupons', 'code')],
         ];
     }
 

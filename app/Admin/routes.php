@@ -18,4 +18,5 @@ Route::group([
     $router->resource('orders', 'OrdersController')->names('admin.orders');
     $router->post('order-refund/{orderRefund}/reject', 'OrderRefundController@reject')->name('admin.orderRefund.reject');
     $router->post('order-refund/{orderRefund}/accept', 'OrderRefundController@accept')->name('admin.orderRefund.accept');
+    $router->resource('coupons', 'CouponsController');
 });

@@ -17,15 +17,16 @@ use Illuminate\Database\Eloquent\Model;
  * @property int         $user_id
  * @property int         $product_sku_id
  * @property int         $quantity
- * @property double      $amount         总价, 优惠前
- * @property-read double $unit_price     单价
- * @property double      $paid_amount    总价, 优惠后
+ * @property double      $amount          总价, 优惠前
+ * @property-read double $unit_price      单价
+ * @property double      $paid_amount     总价, 优惠后
+ * @property-read double $discount_amount 优惠的减免金额
  * @property string      $refund_status
  * @property int         $refund_quantity
- * @property float       $refund_amount  已退款金额
- * @property int         $review_rating  评分
- * @property string      $review_content 评论内容
- * @property Carbon      $reviewed_at    评价时间
+ * @property float       $refund_amount   已退款金额
+ * @property int         $review_rating   评分
+ * @property string      $review_content  评论内容
+ * @property Carbon      $reviewed_at     评价时间
  */
 class OrderItem extends Model
 {
@@ -138,5 +139,23 @@ class OrderItem extends Model
         } else {
             return self::REFUND_STATUS_REFUND_PART;
         }
+    }
+
+    /**
+     * 商品价格是否改变(原因: 优惠等)
+     * @return bool
+     */
+    public function isAmountChanged()
+    {
+        return $this->amount != $this->paid_amount;
+    }
+
+    /**
+     * 减免的优惠金额
+     * @return float
+     */
+    public function getDiscountAmountAttribute()
+    {
+        return $this->amount - $this->paid_amount;
     }
 }

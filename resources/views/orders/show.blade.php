@@ -14,9 +14,9 @@
                 <h3>订单状态: {{ $order->status_map }}</h3>
 
                 @if (!$orderRefund)
-                    <div class="alert alert-info" role="alert">
-                        <strong>当前未发生退款</strong>
-                    </div>
+{{--                    <div class="alert alert-info" role="alert">--}}
+{{--                        <strong>当前未发生退款</strong>--}}
+{{--                    </div>--}}
                 @else
                     <div class="alert alert-info" role="alert">
 
@@ -118,10 +118,15 @@
                 <div class="col-sm-3">商品总额</div>
                 <div class="col-sm-9"><i class="fa fa-rmb" aria-hidden="true"></i> {{ $order->amount }}</div>
             </div>
+            @if ($order->coupon)
             <div class="row">
                 <div class="col-sm-3">优惠</div>
-                <div class="col-sm-9"><i class="fa fa-rmb" aria-hidden="true"></i> {{ $order->paid_amount - $order->amount }}</div>
+                <div class="col-sm-9">
+                    <i class="fa fa-rmb" aria-hidden="true"></i> {{ $order->paid_amount - $order->amount }}
+                    <div class="small text-success">优惠码 {{ $order->coupon->code }}</div>
+                </div>
             </div>
+            @endif
             <div class="row">
                 <div class="col-sm-3">应付总额</div>
                 <div class="col-sm-9"><i class="fa fa-rmb" aria-hidden="true"></i> {{ $order->paid_amount }}</div>
@@ -179,7 +184,11 @@
                         {{ $orderItem->quantity }}
                     </td>
                     <td>
-                        <i class="fa fa-rmb" aria-hidden="true"></i> {{ $orderItem->amount }}
+                        <i class="fa fa-rmb"></i> <span class="@if($orderItem->isAmountChanged()) text-delete text-muted @endif">{{ $orderItem->amount }}</span>
+                        @if ($orderItem->isAmountChanged())
+                            (<span class="text-danger font-weight-bold">{{ $orderItem->paid_amount }}</span>)
+                            <div class="small text-secondary">优惠: <span class="l">{{ $orderItem->discount_amount }}</span></div>
+                        @endif
                     </td>
                 </tr>
             @endforeach

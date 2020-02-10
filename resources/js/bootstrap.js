@@ -55,7 +55,8 @@ window.axios.interceptors.response.use(
                 });
             } else {
                 swal({
-                    title: "发生错误(" + error.response.status + ")",
+                    // title: "发生错误(" + error.response.status + ")",
+                    title: "错误",
                     text: error.response.data.message,
                     icon: "error"
                 })

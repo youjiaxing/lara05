@@ -60,6 +60,8 @@ Route::middleware(['verified'])->group(function () {
     Route::post('/refunds/{order}/all', 'OrderRefundController@refundAll')->name('orderRefunds.refundAll');
     Route::get('/refunds/{order}/{order_refund}', 'OrderRefundController@show')->name('orderRefunds.show');
 
+    // 兑换券
+    Route::get('/coupons/{code}', 'CouponController@show')->name('coupons.show');
 });
 
 // 支付宝服务端回调

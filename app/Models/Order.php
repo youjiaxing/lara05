@@ -42,12 +42,13 @@ use Yansongda\Pay\Gateways\Alipay;
  *     'district'=>'',
  *     'address'=>''
  * ]
- * @property string                            $remark                         订单备注
- * @property int                               $user_id                        用户id
- * @property string                            $review_status                  评价状态
+ * @property string      $remark                         订单备注
+ * @property int         $user_id                        用户id
+ * @property string      $review_status                  评价状态
  *
- * @property OrderRefund                       $active_order_refund            待处理/正在处理的申请退款单
- * @property OrderRefund                       $last_order_refund              最后一次申请单
+ * @property OrderRefund $active_order_refund            待处理/正在处理的申请退款单
+ * @property OrderRefund $last_order_refund              最后一次申请单
+ * @property Coupon      $coupon                         优惠码
  */
 class Order extends Model
 {
@@ -301,5 +302,15 @@ class Order extends Model
         } else {
             return self::REFUND_STATUS_REFUND_PART;
         }
+    }
+
+    /**
+     * 优惠码
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function coupon()
+    {
+        return $this->belongsTo(Coupon::class);
     }
 }

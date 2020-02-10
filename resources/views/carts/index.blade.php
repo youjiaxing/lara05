@@ -49,10 +49,23 @@
         </table>
     </div>
 
+
     <div class="row">
         <form class="w-100">
             <div class="form-group row">
-                <label class="col-sm-2 text-right control-label" for="">选择收货地址</label>
+                <div class="col-sm-2 text-right col-form-label">优惠码</div>
+                <div class="col-sm-3">
+                    <input type="text" name="coupon" class="form-control">
+                    <span class="form-text text-muted" id="coupon_desc"></span>
+                </div>
+                <div class="col-sm-2">
+                    <button class="btn btn-primary" id="coupon-use-btn" type="button">使用</button>
+                    <button class="btn btn-danger d-none" id="coupon-cancel-btn" type="button">取消</button>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 text-right col-form-label" for="">选择收货地址</label>
                 <div class="col-sm-8">
                     <select class="form-control" name="address" id="">
                         @foreach(user()->addresses as $address)
@@ -65,7 +78,7 @@
             </div>
 
             <div class="form-group row">
-                <label for="" class="col-sm-2 text-right control-label">备注</label>
+                <label for="" class="col-sm-2 text-right col-form-label">备注</label>
                 <div class="col-sm-8">
                     <textarea class="form-control" name="remark" id="" rows="3"></textarea>
                 </div>
@@ -82,10 +95,57 @@
 
 @section("script")
     <script>
+        var coupon_input = $('input[name=coupon]');
+        var coupon_desc = $('#coupon_desc');
+        var coupon_use_btn = $('#coupon-use-btn');
+        var coupon_cancel_btn = $('#coupon-cancel-btn');
+        var used_coupon;
+
+        // 一键全选所有商品
         $('#select_all_btn').on('click', function (event) {
             $('input[type=checkbox][name="selected"]:enabled').prop('checked', $(this).prop('checked'));
         });
 
+        // 校验兑换码
+        coupon_use_btn.on('click', function (event) {
+            let coupon = coupon_input.val().trim();
+            if (coupon.length === 0) {
+                swal({
+                    title: '请输入兑换码',
+                    icon: 'warning',
+                });
+                return;
+            }
+
+            axios.get('/coupons/' + coupon)
+                .then((response) => {
+                    coupon_desc.text(response.data.desc);
+                    coupon_use_btn.addClass('d-none');
+                    coupon_cancel_btn.removeClass('d-none');
+                    used_coupon = coupon;
+                    coupon_input.prop('readonly', true);
+                }, (error) => {
+                    if (error.response.status == 404) {
+                        swal('兑换券不存在', '', 'error');
+                    } else if (error.response.data.message) {
+                        swal(error.response.data.message, '', 'error');
+                    } else {
+                        swal('系统内部错误', '', 'error');
+                    }
+                });
+        });
+
+        // 取消使用兑换码
+        coupon_cancel_btn.on('click', function (event) {
+            // coupon_input.val('');
+            coupon_desc.text('');
+            coupon_use_btn.removeClass('d-none');
+            coupon_cancel_btn.addClass('d-none');
+            used_coupon = null;
+            coupon_input.prop('readonly', false);
+        });
+
+        // 从购物车删除商品
         $('.delete-product-btn').on('click', function () {
             let parent_tr = $(this).closest("tr");
             let cart_id = parent_tr.data('cart-id');
@@ -109,12 +169,17 @@
             });
         });
 
+        // 提交订单
         $('#submit_order_btn').on('click', function (event) {
             var req = {
                 remark: $('textarea[name=remark]').val(),
                 address_id: $('select[name=address]').val(),
-                items: []
+                items: [],
+                coupon: used_coupon,
             };
+
+            console.log(req);
+
             $('input[type=checkbox][name="selected"]:enabled:checked').parent().parent().each(function (index, element) {
                 let product_sku_id = this.dataset.id;
                 let amount = $(this).find('input[name=amount]').val();
